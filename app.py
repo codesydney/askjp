@@ -4,8 +4,6 @@ import os
 
 app = Flask(__name__)
 
-index = GPTSimpleVectorIndex.load_from_disk('index.json')
-
 # Querying the index
 #response = index.query("Should we sign each page when certifying an affidavit?")
 #print(response)
@@ -14,9 +12,11 @@ index = GPTSimpleVectorIndex.load_from_disk('index.json')
 def index():
     return render_template('index.html')
 
-@app.route('/show_insights',methods=['POST'])
-def show_insights():
-  print ("In show_insights")      
+@app.route('/handle_question', methods=['POST'])
+def handle_question():
+    index = GPTSimpleVectorIndex.load_from_disk('index.json')
+    answer = index.query(request.form['question'])
+    return render_template('result.html', answer=answer)
  
 # 404 error handler
 @app.errorhandler(404)
